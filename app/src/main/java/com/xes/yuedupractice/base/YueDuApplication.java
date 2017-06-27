@@ -13,9 +13,12 @@ import android.app.Application;
  */
 
 public class YueDuApplication extends Application {
+    public static YueDuApplication sYueDuApplication;
+
     @Override
     public void onCreate() {
         super.onCreate();
-
+        sYueDuApplication = this;
     }
+
 }
