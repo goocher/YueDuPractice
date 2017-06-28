@@ -87,7 +87,7 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
         mDataBinding.getRoot().setVisibility(View.GONE);
     }
 
-    protected <T> T getView(int layoutId) {
+    protected <T extends View> T getView(int layoutId) {
         return (T) findViewById(layoutId);
     }
 
@@ -152,6 +152,12 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setHomeAsUpIndicator(R.mipmap.icon_back);
         }
+        mBaseBinding.toolBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     public void addSubscribetion(Subscription subscription) {
