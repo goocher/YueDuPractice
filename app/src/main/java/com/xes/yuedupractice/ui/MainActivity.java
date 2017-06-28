@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -30,7 +32,7 @@ import java.util.List;
 
 import rx.functions.Action1;
 
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, View.OnClickListener {
 
     private ActivityMainBinding mMainBinding;
     private FloatingActionButton mFloatingActionButton;
@@ -68,6 +70,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     private void initListener() {
+        mIvTitleDou.setOnClickListener(this);
+        mIvTitleOne.setOnClickListener(this);
+        mIvTitleGank.setOnClickListener(this);
+        mIvTitleMenu.setOnClickListener(this);
 
     }
 
@@ -129,11 +135,46 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     @Override
     public void onPageSelected(int position) {
+        switch (position) {
+            case 0:
+                setIvTitleSelect(mIvTitleGank);
+                break;
+            case 1:
+                setIvTitleSelect(mIvTitleOne);
+                break;
+            case 2:
+                setIvTitleSelect(mIvTitleDou);
+                break;
+        }
+    }
 
+    private void setIvTitleSelect(View select) {
+        mIvTitleGank.setSelected(false);
+        mIvTitleOne.setSelected(false);
+        mIvTitleDou.setSelected(false);
+        select.setSelected(true);
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_title_gank:
+                mVpContent.setCurrentItem(0);
+                break;
+            case R.id.iv_title_one:
+                mVpContent.setCurrentItem(1);
+                break;
+            case R.id.iv_title_dou:
+                mVpContent.setCurrentItem(2);
+                break;
+            case R.id.iv_title_menu:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+        }
     }
 }
