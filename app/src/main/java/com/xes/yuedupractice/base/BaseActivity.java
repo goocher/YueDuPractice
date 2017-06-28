@@ -87,11 +87,11 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
         mDataBinding.getRoot().setVisibility(View.GONE);
     }
 
-    public <T> T getView(int layoutId) {
+    protected <T> T getView(int layoutId) {
         return (T) findViewById(layoutId);
     }
 
-    public void showLoading() {
+    protected void showLoading() {
         if (llProgressView.getVisibility() != View.VISIBLE) {
             llProgressView.setVisibility(View.VISIBLE);
         }
@@ -106,7 +106,7 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
         }
     }
 
-    public void showError() {
+    protected void showError() {
         if (llProgressView.getVisibility() != View.GONE) {
             llProgressView.setVisibility(View.GONE);
         }
@@ -121,7 +121,7 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
         }
     }
 
-    public void showContentView() {
+    protected void showContentView() {
         if (llProgressView.getVisibility() != View.GONE) {
             llProgressView.setVisibility(View.GONE);
         }
@@ -140,11 +140,11 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
 
     }
 
-    protected void setTitle() {
-
+    public void setTitle(CharSequence title) {
+        mBaseBinding.toolBar.setTitle(title);
     }
 
-    private void setToolBar() {
+    protected void setToolBar() {
         setSupportActionBar(mBaseBinding.toolBar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
