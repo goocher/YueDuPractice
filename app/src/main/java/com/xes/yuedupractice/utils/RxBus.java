@@ -79,6 +79,7 @@ public class RxBus {
      * @param eventType 事件类型
      * @param <T>
      * @return
+     *
      */
     public <T> Observable<T> toObservable(final int code, final Class<T> eventType) {
         return _bus.ofType(RxBusBaseMessage.class)
