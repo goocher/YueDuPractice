@@ -11,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,13 +19,17 @@ import android.widget.ImageView;
 import com.xes.yuedupractice.R;
 import com.xes.yuedupractice.adapter.MainFragmentAdapter;
 import com.xes.yuedupractice.databinding.ActivityMainBinding;
+import com.xes.yuedupractice.databinding.NavHeaderMainBinding;
 import com.xes.yuedupractice.ui.fragment.BookFragment;
 import com.xes.yuedupractice.ui.fragment.GankFragment;
 import com.xes.yuedupractice.ui.fragment.OneFragment;
 import com.xes.yuedupractice.utils.CommonUtils;
+import com.xes.yuedupractice.utils.ConstantsImageUrl;
+import com.xes.yuedupractice.utils.ImgLoadUtils;
 import com.xes.yuedupractice.utils.RxBus;
 import com.xes.yuedupractice.utils.RxBusBaseMessage;
 import com.xes.yuedupractice.utils.RxCodeConstants;
+import com.xes.yuedupractice.utils.SPUtils;
 import com.xes.yuedupractice.utils.StatusBarUtils;
 
 import java.util.ArrayList;
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     private ImageView mIvTitleMenu;
     private ImageView mIvTitleOne;
     private List<Fragment> mFragments;
+    private NavHeaderMainBinding mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +72,18 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     private void initDrawerLayout() {
-
+        mNavView.inflateHeaderView(R.layout.nav_header_main);
+        mBind = DataBindingUtil.bind(mNavView.getHeaderView(0));
+        mBind.setListener(this);
+        ImgLoadUtils.displayCircle(mBind.ivAvatar, ConstantsImageUrl.IC_AVATAR);
+        mBind.dayNightSwitch.setChecked(SPUtils.getNightMode());
+        mBind.llNavAbout.setOnClickListener(listener);
+        mBind.llNavDeedback.setOnClickListener(listener);
+        mBind.llNavHomepage.setOnClickListener(listener);
+        mBind.llNavLogin.setOnClickListener(listener);
+        mBind.llNavScanDownload.setOnClickListener(listener);
+        mBind.llNavExit.setOnClickListener(this);
+        mBind.ivAvatar.setOnClickListener(this);
     }
 
     private void initListener() {
@@ -76,6 +93,21 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         mIvTitleMenu.setOnClickListener(this);
 
     }
+
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            mMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
+            mMainBinding.drawerLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    switch (v.getId()) {
+
+                    }
+                }
+            },500);
+        }
+    };
 
     private void initContentFragment() {
         mFragments = new ArrayList<>();
@@ -121,11 +153,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         ViewGroup.LayoutParams layoutParams = mMainBinding.include.viewStatus.getLayoutParams();
         layoutParams.height = StatusBarUtils.getStatusBarHeight(this);
         mMainBinding.include.viewStatus.setLayoutParams(layoutParams);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     @Override
@@ -177,4 +204,47 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                 break;
         }
     }
+
+    /**
+     * 夜间模式待完善
+     */
+    public boolean getNightMode() {
+        return SPUtils.getNightMode();
+    }
+
+    public void onNightModeClick(View view) {
+        if (!SPUtils.getNightMode()) {
+//            SkinCompatManager.getInstance().loadSkin(Constants.NIGHT_SKIN);
+        } else {
+            // 恢复应用默认皮肤
+//            SkinCompatManager.getInstance().restoreDefaultTheme();
+        }
+        SPUtils.setNightMode(!SPUtils.getNightMode());
+        mBind.dayNightSwitch.setChecked(SPUtils.getNightMode());
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mMainBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mMainBinding.drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                // 不退出程序，进入后台
+                moveTaskToBack(true);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }
