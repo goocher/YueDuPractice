@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
                     }
                 }
-            },500);
+            }, 500);
         }
     };
 
