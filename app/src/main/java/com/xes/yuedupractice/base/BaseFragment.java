@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.xes.yuedupractice.R;
@@ -29,16 +30,17 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment {
-    private SV mDataBinding;
+public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment implements IBaseView {
+    protected SV mDataBinding;
     private LinearLayout mLlProgressView;
-    private RelativeLayout mContainer;
+    protected RelativeLayout mContainer;
     private View mRefreshView;
     private CompositeSubscription mCompositeSubscription;
     private Activity mActivity;
     private FragmentBaseBinding mFragmentBaseBinding;
     private AnimationDrawable mAnimationDrawable;
-    private boolean mIsVisible;
+    protected boolean prepared;
+    protected boolean dataLoaded;
 
     public BaseFragment() {
         // Required empty public constructor
@@ -65,8 +67,11 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
         mDataBinding.getRoot().setLayoutParams(layoutParams);
         mContainer = (RelativeLayout) mFragmentBaseBinding.getRoot().findViewById(R.id.container);
         mContainer.addView(mDataBinding.getRoot());
+        initView();
         return view;
     }
+
+    protected abstract void initView();
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -82,7 +87,7 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
-                        showLoading();
+                        showLoadingDialog();
                         onRefresh();
                     }
                 });
@@ -90,28 +95,27 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (getUserVisibleHint()) {
-            mIsVisible = true;
-            onInVisible();
-        } else {
-            mIsVisible = false;
-            onVisible();
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        prepared = true;
+        lazyLoad();
+    }
+
+    private void lazyLoad() {
+        if (getUserVisibleHint() && !dataLoaded && prepared) {
+            loadData();
+            dataLoaded = true;
         }
     }
 
-    public void onVisible() {
-        loadData();
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        //当可见的时候
+        lazyLoad();
     }
 
-    public void loadData() {
-
-    }
-
-    protected void onInVisible() {
-
-    }
+    protected abstract void loadData();
 
     public abstract int setContent();
 
@@ -123,7 +127,8 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
 
     }
 
-    protected void showLoading() {
+    @Override
+    public void showLoadingDialog() {
         if (mLlProgressView.getVisibility() != View.VISIBLE) {
             mLlProgressView.setVisibility(View.VISIBLE);
         }
@@ -138,7 +143,17 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
         }
     }
 
-    protected void showError() {
+    @Override
+    public void toast(String msg) {
+        Toast.makeText(YueDuApplication.sYueDuApplication, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void dismissDialog() {
+
+    }
+
+    public void showError() {
         if (mLlProgressView.getVisibility() != View.GONE) {
             mLlProgressView.setVisibility(View.GONE);
         }
@@ -153,7 +168,8 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
         }
     }
 
-    protected void showContentView() {
+    @Override
+    public void showContent() {
         if (mLlProgressView.getVisibility() != View.GONE) {
             mLlProgressView.setVisibility(View.GONE);
         }
@@ -178,6 +194,7 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        prepared = false;
         if (mCompositeSubscription != null && mCompositeSubscription.hasSubscriptions()) {
             mCompositeSubscription.unsubscribe();
         }

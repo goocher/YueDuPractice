@@ -1,30 +1,30 @@
 package com.xes.yuedupractice.ui.fragment;
 
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.xes.yuedupractice.R;
+import com.xes.yuedupractice.base.BaseFragment;
+import com.xes.yuedupractice.databinding.FragmentBookBinding;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BookFragment extends Fragment {
+public class BookFragment extends BaseFragment<FragmentBookBinding> {
 
 
     public BookFragment() {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book, container, false);
+    protected void loadData() {
+
     }
 
+
+    @Override
+    public int setContent() {
+        return R.layout.fragment_book;
+    }
 }

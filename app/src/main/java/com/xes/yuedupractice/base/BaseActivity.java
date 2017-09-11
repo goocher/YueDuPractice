@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.xes.yuedupractice.R;
@@ -36,7 +37,7 @@ import rx.subscriptions.CompositeSubscription;
  * </pre>
  */
 
-public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity {
+public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity implements IBaseView {
     private SV mDataBinding;
     private CompositeSubscription mCompositeSubscription;
     private LinearLayout llProgressView;
@@ -81,7 +82,7 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
                     @Override
                     public void call(Void aVoid) {
                         onRefresh();
-                        showLoading();
+                        showLoadingDialog();
                     }
                 });
         mDataBinding.getRoot().setVisibility(View.GONE);
@@ -91,7 +92,8 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
         return (T) findViewById(layoutId);
     }
 
-    protected void showLoading() {
+    @Override
+    public void showLoadingDialog() {
         if (llProgressView.getVisibility() != View.VISIBLE) {
             llProgressView.setVisibility(View.VISIBLE);
         }
@@ -106,7 +108,20 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
         }
     }
 
-    protected void showError() {
+    @Override
+    public void toast(String msg) {
+        Toast.makeText(YueDuApplication.sYueDuApplication, msg, Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void dismissDialog() {
+
+    }
+
+
+    @Override
+    public void showError() {
         if (llProgressView.getVisibility() != View.GONE) {
             llProgressView.setVisibility(View.GONE);
         }
@@ -121,7 +136,8 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
         }
     }
 
-    protected void showContentView() {
+    @Override
+    public void showContent() {
         if (llProgressView.getVisibility() != View.GONE) {
             llProgressView.setVisibility(View.GONE);
         }

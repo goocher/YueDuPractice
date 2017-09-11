@@ -5,13 +5,12 @@ import android.support.v4.app.Fragment;
 
 import com.xes.yuedupractice.R;
 import com.xes.yuedupractice.base.BaseFragment;
-import com.xes.yuedupractice.databinding.FragmentOneBinding;
+import com.xes.yuedupractice.databinding.FragmentEveryDayBinding;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OneFragment extends BaseFragment<FragmentOneBinding> {
-
+public class EveryDayFragment extends BaseFragment<FragmentEveryDayBinding> {
 
     @Override
     protected void initView() {
@@ -26,7 +25,6 @@ public class OneFragment extends BaseFragment<FragmentOneBinding> {
 
     @Override
     public int setContent() {
-        return R.layout.fragment_one;
+        return R.layout.fragment_every_day;
     }
-
 }

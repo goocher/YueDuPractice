@@ -5,19 +5,18 @@ import android.support.v4.app.Fragment;
 
 import com.xes.yuedupractice.R;
 import com.xes.yuedupractice.base.BaseFragment;
-import com.xes.yuedupractice.databinding.FragmentOneBinding;
+import com.xes.yuedupractice.databinding.FragmentCustomBinding;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OneFragment extends BaseFragment<FragmentOneBinding> {
+public class CustomFragment extends BaseFragment<FragmentCustomBinding> {
 
 
     @Override
     protected void initView() {
 
     }
-
 
     @Override
     protected void loadData() {
@@ -26,7 +25,7 @@ public class OneFragment extends BaseFragment<FragmentOneBinding> {
 
     @Override
     public int setContent() {
-        return R.layout.fragment_one;
+        return R.layout.fragment_custom;
     }
 
 }
