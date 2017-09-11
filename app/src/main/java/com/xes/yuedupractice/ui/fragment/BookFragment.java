@@ -18,6 +18,11 @@ public class BookFragment extends BaseFragment<FragmentBookBinding> {
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     protected void loadData() {
 
     }
