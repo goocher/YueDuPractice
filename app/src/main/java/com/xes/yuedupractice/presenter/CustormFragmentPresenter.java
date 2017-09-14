@@ -1,6 +1,8 @@
 package com.xes.yuedupractice.presenter;
 
+import com.xes.yuedupractice.base.BasePresenter;
 import com.xes.yuedupractice.contract.CustormFragmentContract;
+import com.xes.yuedupractice.ui.fragment.CustomFragment;
 
 /**
  * <pre>
@@ -12,5 +14,6 @@ import com.xes.yuedupractice.contract.CustormFragmentContract;
  * </pre>
  */
 
-public class CustormFragmentPresenter implements CustormFragmentContract.Presenter {
+public class CustormFragmentPresenter extends BasePresenter<CustomFragment> implements CustormFragmentContract.Presenter {
+
 }

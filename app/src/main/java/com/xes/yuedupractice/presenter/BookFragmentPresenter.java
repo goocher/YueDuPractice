@@ -1,6 +1,9 @@
 package com.xes.yuedupractice.presenter;
 
+import com.xes.yuedupractice.base.BasePresenter;
 import com.xes.yuedupractice.contract.BookFragmentContract;
+import com.xes.yuedupractice.model.BookFragmentModel;
+import com.xes.yuedupractice.ui.fragment.BookFragment;
 
 /**
  * <pre>
@@ -12,5 +15,17 @@ import com.xes.yuedupractice.contract.BookFragmentContract;
  * </pre>
  */
 
-public class BookFragmentPresenter implements BookFragmentContract.Presenter {
+public class BookFragmentPresenter extends BasePresenter<BookFragment> implements BookFragmentContract.Presenter {
+
+    private BookFragmentModel mModel;
+
+    @Override
+    public void attachView(BookFragment view) {
+        super.attachView(view);
+        mModel = new BookFragmentModel();
+    }
+
+    public void getData(String s) {
+        mView.toast(s);
+    }
 }

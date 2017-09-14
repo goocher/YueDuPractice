@@ -1,6 +1,6 @@
 package com.xes.yuedupractice.model;
 
-import com.xes.yuedupractice.contract.AndroidContract;
+import com.xes.yuedupractice.contract.EveryDayContract;
 
 /**
  * <pre>
@@ -12,6 +12,5 @@ import com.xes.yuedupractice.contract.AndroidContract;
  * </pre>
  */
 
-public class AndroidModel implements AndroidContract.Model {
-
+public class EveryDayModel implements EveryDayContract.Model {
 }

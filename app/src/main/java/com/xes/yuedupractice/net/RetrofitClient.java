@@ -24,26 +24,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * </pre>
  */
 
-public class ServiceApi {
+public class RetrofitClient {
     public static final int TIMEOUT = 60;
-    private static ServiceApi sServiceApi;
-    private static final String BASE_URL = "";
+    private static RetrofitClient sRetrofitClient;
+    private static final String BASE_URL = "http://localhost:8080/";
     private static ApiService sApiService;
 
-    private ServiceApi() {
+    private RetrofitClient() {
 
     }
 
-    public static ServiceApi getInstance() {
-        if (sServiceApi == null) {
-            synchronized (ServiceApi.class) {
-                if (sServiceApi == null) {
-                    sServiceApi = new ServiceApi();
-                }
-            }
-        }
-        return sServiceApi;
-    }
+//    public static RetrofitClient getInstance() {
+//        if (sRetrofitClient == null) {
+//            synchronized (RetrofitClient.class) {
+//                if (sRetrofitClient == null) {
+//                    sRetrofitClient = new RetrofitClient();
+//                }
+//            }
+//        }
+//        return sRetrofitClient;
+//    }
 
     static {
         initRetrofit();
@@ -81,5 +81,9 @@ public class ServiceApi {
                 .client(okHttpClient)
                 .build();
         sApiService = retrofit.create(ApiService.class);
+    }
+
+    public static ApiService getApiService() {
+        return sApiService;
     }
 }

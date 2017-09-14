@@ -1,5 +1,14 @@
 package com.xes.yuedupractice.net;
 
+import com.xes.yuedupractice.data.BaseResult;
+import com.xes.yuedupractice.data.response.TestBean;
+
+import java.util.List;
+
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+import rx.Observable;
+
 /**
  * <pre>
  *     author : gooch
@@ -11,4 +20,6 @@ package com.xes.yuedupractice.net;
  */
 
 public interface ApiService {
+    @GET("visitshop/task")
+    Observable<BaseResult<List<TestBean>>> getTestData(@Query("pagenum") int pageNum);
 }

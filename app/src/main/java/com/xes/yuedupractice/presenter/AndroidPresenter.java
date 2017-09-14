@@ -1,6 +1,9 @@
 package com.xes.yuedupractice.presenter;
 
+import com.xes.yuedupractice.base.BasePresenter;
 import com.xes.yuedupractice.contract.AndroidContract;
+import com.xes.yuedupractice.model.AndroidModel;
+import com.xes.yuedupractice.ui.fragment.AndroidFragment;
 
 /**
  * <pre>
@@ -12,5 +15,14 @@ import com.xes.yuedupractice.contract.AndroidContract;
  * </pre>
  */
 
-public class AndroidPresenter implements AndroidContract.Presenter {
+public class AndroidPresenter extends BasePresenter<AndroidFragment> implements AndroidContract.Presenter {
+
+    private AndroidModel mModel;
+
+    @Override
+    public void attachView(AndroidFragment view) {
+        super.attachView(view);
+        mModel = new AndroidModel();
+    }
+
 }

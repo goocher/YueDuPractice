@@ -1,6 +1,12 @@
 package com.xes.yuedupractice.presenter;
 
+import com.xes.yuedupractice.base.BasePresenter;
 import com.xes.yuedupractice.contract.GankFragmentContract;
+import com.xes.yuedupractice.data.response.TestBean;
+import com.xes.yuedupractice.model.GankFragmentModel;
+import com.xes.yuedupractice.ui.fragment.GankFragment;
+
+import rx.functions.Action1;
 
 /**
  * <pre>
@@ -12,5 +18,23 @@ import com.xes.yuedupractice.contract.GankFragmentContract;
  * </pre>
  */
 
-public class GankFragmentPresenter implements GankFragmentContract.Presenter {
+public class GankFragmentPresenter extends BasePresenter<GankFragment> implements GankFragmentContract.Presenter {
+
+    private GankFragmentModel mModel;
+
+    @Override
+    public void attachView(GankFragment view) {
+        super.attachView(view);
+        mModel = new GankFragmentModel();
+    }
+
+    @Override
+    public void start() {
+        mModel.getTestData().subscribe(new Action1<TestBean>() {
+            @Override
+            public void call(TestBean testBean) {
+                mView.setTestData(testBean);
+            }
+        });
+    }
 }

@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         mMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         init();
 
@@ -116,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         mFragments.add(new BookFragment());
         MainFragmentAdapter adapter = new MainFragmentAdapter(getSupportFragmentManager(), mFragments);
         mVpContent.setAdapter(adapter);
-        mVpContent.setOffscreenPageLimit(2);
         mVpContent.addOnPageChangeListener(this);
         mVpContent.setCurrentItem(0);
         mIvTitleGank.setSelected(true);

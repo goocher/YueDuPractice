@@ -1,12 +1,16 @@
 package com.xes.yuedupractice.ui.fragment;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.xes.yuedupractice.R;
 import com.xes.yuedupractice.adapter.GankFragmentAdapter;
-import com.xes.yuedupractice.base.BaseFragment;
+import com.xes.yuedupractice.base.BaseLazyFragment;
+import com.xes.yuedupractice.contract.GankFragmentContract;
+import com.xes.yuedupractice.data.response.TestBean;
 import com.xes.yuedupractice.databinding.FragmentGankBinding;
+import com.xes.yuedupractice.presenter.GankFragmentPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +18,11 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GankFragment extends BaseFragment<FragmentGankBinding> {
+public class GankFragment extends BaseLazyFragment<FragmentGankBinding, GankFragmentPresenter> implements GankFragmentContract.View {
 
-    private List<String> mTitles;
-    private List<Fragment> mFragments;
+    private EveryDayFragment mEveryDayFragment;
+    private WelfareFragment mWelfareFragment;
+    private CustomFragment mCustomFragment;
 
     @Override
     public int setContent() {
@@ -25,28 +30,46 @@ public class GankFragment extends BaseFragment<FragmentGankBinding> {
     }
 
     @Override
-    protected void initView() {
-        initFragments();
+    public GankFragmentPresenter setPresenter() {
+        return new GankFragmentPresenter();
     }
 
     @Override
-    protected void loadData() {
+    protected void initView() {
 
     }
 
-    private void initFragments() {
-        mTitles = new ArrayList<>();
-        mFragments = new ArrayList<>();
-        mTitles.add("每日推荐");
-        mTitles.add("福利");
-        mTitles.add("干货定制");
-        mTitles.add("大安卓");
-        mFragments.add(new EveryDayFragment());
-        mFragments.add(new WelfareFragment());
-        mFragments.add(new CustomFragment());
-        mFragments.add(AndroidFragment.getInstance("android"));
-        mDataBinding.vpGankContent.setOffscreenPageLimit(3);
-        GankFragmentAdapter adapter = new GankFragmentAdapter(getChildFragmentManager(), mFragments, mTitles);
+    @Override
+    protected void startLoad() {
+        mPresenter.start();
+    }
 
+    private void initFragments(Bundle bundle) {
+        List<String> titles = new ArrayList<>();
+        List<Fragment> fragments = new ArrayList<>();
+        titles.add(getString(R.string.everyday));
+        titles.add(getString(R.string.welfare));
+        titles.add(getString(R.string.custom));
+        titles.add(getString(R.string.android));
+        mEveryDayFragment = new EveryDayFragment();
+        mEveryDayFragment.setArguments(bundle);
+        fragments.add(mEveryDayFragment);
+        mWelfareFragment = new WelfareFragment();
+        fragments.add(mWelfareFragment);
+        mCustomFragment = new CustomFragment();
+        fragments.add(mCustomFragment);
+        fragments.add(AndroidFragment.getInstance("android"));
+        GankFragmentAdapter adapter = new GankFragmentAdapter(getChildFragmentManager(), fragments, titles);
+        mDataBinding.vpGankContent.setAdapter(adapter);
+        mDataBinding.tlGankTitle.setupWithViewPager(mDataBinding.vpGankContent);
+    }
+
+
+    @Override
+    public void setTestData(TestBean testData) {
+        showContent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("test", testData);
+        initFragments(bundle);
     }
 }

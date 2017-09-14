@@ -1,5 +1,12 @@
 package com.xes.yuedupractice.contract;
 
+import com.xes.yuedupractice.data.BaseResult;
+import com.xes.yuedupractice.data.response.TestBean;
+
+import java.util.List;
+
+import rx.Observable;
+
 /**
  * <pre>
  *     author : gooch
@@ -12,11 +19,15 @@ package com.xes.yuedupractice.contract;
 
 public interface GankFragmentContract {
     interface Model {
+        Observable<BaseResult<List<TestBean>>> start();
+        Observable<TestBean> getTestData();
     }
 
     interface View {
+        void setTestData(TestBean testData);
     }
 
     interface Presenter {
+        void start();
     }
 }

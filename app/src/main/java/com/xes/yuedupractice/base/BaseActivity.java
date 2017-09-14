@@ -37,13 +37,14 @@ import rx.subscriptions.CompositeSubscription;
  * </pre>
  */
 
-public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity implements IBaseView {
+public class BaseActivity<SV extends ViewDataBinding, P extends BasePresenter> extends AppCompatActivity implements IBaseView {
     private SV mDataBinding;
     private CompositeSubscription mCompositeSubscription;
     private LinearLayout llProgressView;
     private View mRefreshView;
     private ActivityBaseBinding mBaseBinding;
     private AnimationDrawable mAnimationDrawable;
+    protected P mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,6 +136,7 @@ public class BaseActivity<SV extends ViewDataBinding> extends AppCompatActivity 
             mDataBinding.getRoot().setVisibility(View.GONE);
         }
     }
+
 
     @Override
     public void showContent() {

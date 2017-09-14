@@ -1,8 +1,8 @@
 package com.xes.yuedupractice.presenter;
 
 import com.xes.yuedupractice.base.BasePresenter;
-import com.xes.yuedupractice.contract.WelfareFragmentContract;
-import com.xes.yuedupractice.ui.fragment.WelfareFragment;
+import com.xes.yuedupractice.contract.EveryDayContract;
+import com.xes.yuedupractice.ui.fragment.EveryDayFragment;
 
 /**
  * <pre>
@@ -14,6 +14,6 @@ import com.xes.yuedupractice.ui.fragment.WelfareFragment;
  * </pre>
  */
 
-public class WelfareFragmentPresenter extends BasePresenter<WelfareFragment> implements WelfareFragmentContract.Presenter {
+public class EveryDayPresenter extends BasePresenter<EveryDayFragment> implements EveryDayContract.Presenter {
 
 }

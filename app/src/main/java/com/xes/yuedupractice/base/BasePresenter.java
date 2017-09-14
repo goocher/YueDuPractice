@@ -30,7 +30,7 @@ public class BasePresenter<T extends IBaseView> implements IBasePresenter<T> {
         return mView != null;
     }
 
-    public T getMvpView() {
+    protected T getMvpView() {
         checkViewAttached();
         return mView;
     }

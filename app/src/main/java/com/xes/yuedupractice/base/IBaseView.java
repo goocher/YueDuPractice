@@ -20,4 +20,5 @@ public interface IBaseView {
     void showContent();
 
     void showError();
+
 }

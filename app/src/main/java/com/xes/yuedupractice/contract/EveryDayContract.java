@@ -10,16 +10,13 @@ package com.xes.yuedupractice.contract;
  * </pre>
  */
 
-public interface AndroidContract {
+public interface EveryDayContract {
     interface Model {
-
     }
 
-    interface View  {
-
+    interface View {
     }
 
     interface Presenter {
-
     }
 }

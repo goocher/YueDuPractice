@@ -21,6 +21,10 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.xes.yuedupractice.R;
 import com.xes.yuedupractice.databinding.FragmentBaseBinding;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
@@ -30,27 +34,18 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment implements IBaseView {
+public abstract class BaseLazyFragment<SV extends ViewDataBinding, P extends BasePresenter> extends Fragment implements IBaseView {
     protected SV mDataBinding;
     private LinearLayout mLlProgressView;
     protected RelativeLayout mContainer;
     private View mRefreshView;
+    private FragmentBaseBinding mFragmentBaseBinding;
     private CompositeSubscription mCompositeSubscription;
     private Activity mActivity;
-    private FragmentBaseBinding mFragmentBaseBinding;
     private AnimationDrawable mAnimationDrawable;
     protected boolean prepared;
     protected boolean dataLoaded;
-
-    public BaseFragment() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mActivity = (Activity) context;
-    }
+    protected P mPresenter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -61,28 +56,19 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_base, container, false);
+        mFragmentBaseBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_base, null, false);
         mDataBinding = DataBindingUtil.inflate(mActivity.getLayoutInflater(), setContent(), null, false);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mDataBinding.getRoot().setLayoutParams(layoutParams);
         mContainer = (RelativeLayout) mFragmentBaseBinding.getRoot().findViewById(R.id.container);
         mContainer.addView(mDataBinding.getRoot());
-        initView();
-        return view;
-    }
-
-    protected abstract void initView();
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mLlProgressView = getView(R.id.ll_progress_bar);
-        ImageView imageView = getView(R.id.img_progress);
+        mLlProgressView = (LinearLayout) mFragmentBaseBinding.getRoot().findViewById(R.id.ll_progress_bar);
+        ImageView imageView = (ImageView) mFragmentBaseBinding.getRoot().findViewById(R.id.img_progress);
         mAnimationDrawable = (AnimationDrawable) imageView.getDrawable();
         if (!mAnimationDrawable.isRunning()) {
             mAnimationDrawable.start();
         }
-        mRefreshView = getView(R.id.ll_error_refresh);
+        mRefreshView = mFragmentBaseBinding.getRoot().findViewById(R.id.ll_error_refresh);
         RxView.clicks(mRefreshView).throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .subscribe(new Action1<Void>() {
                     @Override
@@ -92,6 +78,11 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
                     }
                 });
         mDataBinding.getRoot().setVisibility(View.GONE);
+        mPresenter = setPresenter();
+        mPresenter.attachView(this);
+        EventBus.getDefault().register(this);
+        initView();
+        return mFragmentBaseBinding.getRoot();
     }
 
     @Override
@@ -101,12 +92,53 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
         lazyLoad();
     }
 
-    private void lazyLoad() {
-        if (getUserVisibleHint() && !dataLoaded && prepared) {
-            loadData();
-            dataLoaded = true;
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        prepared = false;
+        dataLoaded = false;
+        if (mCompositeSubscription != null && mCompositeSubscription.hasSubscriptions()) {
+            mCompositeSubscription.unsubscribe();
         }
     }
+
+    public BaseLazyFragment() {
+        // Required empty public constructor
+    }
+
+    public abstract P setPresenter();
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (Activity) context;
+    }
+
+    protected abstract void initView();
+
+
+    private void lazyLoad() {
+        if (!prepared) {
+            return;
+        }
+        if (getUserVisibleHint() && !dataLoaded) {
+            startLoad();
+            dataLoaded = true;
+        } else if (!getUserVisibleHint() && dataLoaded) {
+            stopLoad();
+        }
+    }
+
+    protected void stopLoad() {
+
+    }
+
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -115,7 +147,7 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
         lazyLoad();
     }
 
-    protected abstract void loadData();
+    protected abstract void startLoad();
 
     public abstract int setContent();
 
@@ -191,12 +223,9 @@ public abstract class BaseFragment<SV extends ViewDataBinding> extends Fragment 
         mCompositeSubscription.add(subscription);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        prepared = false;
-        if (mCompositeSubscription != null && mCompositeSubscription.hasSubscriptions()) {
-            mCompositeSubscription.unsubscribe();
-        }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void empty(Object objects) {
+
     }
 }
+
