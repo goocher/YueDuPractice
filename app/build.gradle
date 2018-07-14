@@ -21,6 +21,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+     productFlavors {
+        demo {
+            
+            versionName "1.0"
+        }
+        full {
+           
+            versionName "1.1"
+        }
+    }
     dataBinding {
         enabled = true
     }
@@ -28,7 +38,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.each  { output ->
             //开始输出
-            output.outputFile = new File("d:/download/testjenkins.apk")
+            output.outputFile = new File("d:/download",output.name+".apk")
         }
     }
 }
