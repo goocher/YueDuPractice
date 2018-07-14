@@ -24,6 +24,13 @@ android {
     dataBinding {
         enabled = true
     }
+    //这是应用编译完成
+    applicationVariants.all { variant ->
+        variant.outputs.each  { output ->
+            //开始输出
+            output.outputFile = new File("d:/download/testjenkins.apk")
+        }
+    }
 }
 
 dependencies {
