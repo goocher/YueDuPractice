@@ -22,11 +22,11 @@ android {
         }
     }
      productFlavors {
-        demo {
+       hs {
             
             versionName "1.0"
         }
-        full {
+        vyk {
            
             versionName "1.1"
         }
@@ -38,7 +38,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.each  { output ->
             //开始输出
-            output.outputFile = new File("d:/download",output.name+".apk")
+            output.outputFile = new File("d:/download/"+output.name,output.name+".apk")
         }
     }
 }
